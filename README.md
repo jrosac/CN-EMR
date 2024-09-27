@@ -15,7 +15,7 @@ A primeira parte consiste em buscar e instanciar uma feature do EC2 chamada **ke
 
 Console para instanciar um par de chaves.
 
-![console para criar keypairs](docs/imgs/Screenshot_20240925_160444.png) 
+![chaves instanciadas](docs/imgs/Screenshot_20240925_160444.png) 
    
 
 #### Informações para a criação do par de chaves
@@ -28,51 +28,49 @@ Após a criação do par de chaves, será feito o download do arquivo `.pem` com
 
 A segunda etapa consiste na criação do cluster a partir do AMAZON EMR. A criação do cluster será dividida em 3 etapas principais: nome e aplicativos, configuração do cluster, provisionamento e escalabilidade.
 
-![console para criar keypairs](docs/imgs/Screenshot_20240925_161711.png) 
-
 ### Tela para a criação e visualização dos clusters criados
 
-![console para criar keypairs](docs/imgs/Screenshot_20240925_161711.png)
+![Clusters instanciados](docs/imgs/Screenshot_20240925_161711.png)
 
 ### Tela de nomeação e escolha da versão do cluster junto das aplicações que serão utilizadas.  
 
-![console para criar keypairs](docs/imgs/Screenshot_20240925_163207.png)
+![console para isntanciar cluster](docs/imgs/Screenshot_20240925_163207.png)
 
 ### Tela para a configuração do Cluster
 
 Definição do nome e capacidade de memória do **Master Node** (núcleo) e dos **Workers** (tarefa).
 
-![console para criar keypairs](docs/imgs/Screenshot_20240925_163450.png)
+![info cluster](docs/imgs/Screenshot_20240925_163450.png)
 
 ### Escalabilidade do Cluster
 
 Define quantos núcleos e workers serão instanciados e também opções de rede e algumas configurações, como **Etapas**.
 
-![console para criar keypairs](docs/imgs/Screenshot_20240925_163510.png)
+![info cluster](docs/imgs/Screenshot_20240925_163510.png)
 
 
 ### Opção de encerramento automático
 
 O cluster poderá ser encerrado automaticamente após 1 hora de uso, mas esse tempo pode ser editado para o valor desejado.
 
-![console para criar keypairs](docs/imgs/Screenshot_20240925_163524.png)
+![encerramento automatico cluster](docs/imgs/Screenshot_20240925_163524.png)
 
 ### Logs do cluster
 
 Os logs do cluster serão salvos numa instância do AMAZON EC3. Pode ser uma instância já existente; se não, será instanciada uma nova.
 
-![console para criar keypairs](docs/imgs/Screenshot_20240925_163533.png)
+![Logs das ações do cluster](docs/imgs/Screenshot_20240925_163533.png)
 
 ### Perfis de serviço e instâncias
 
 Perfis e instâncias com as configurações de  default para usar o próprio **autoscaling** da AWS.
 
-![console para criar keypairs](docs/imgs/Screenshot_20240925_163617.png)
+![info cluster](docs/imgs/Screenshot_20240925_163617.png)
 
 ### Resumo
 
 Resumo das informações e configurações do Cluster criado.
-![console para criar keypairs](docs/imgs/Screenshot_20240925_163659.png)
+![Config cluster](docs/imgs/Screenshot_20240925_163659.png)
 
 ## Terceira Etapa
 
@@ -80,29 +78,42 @@ A terceira etapa consiste em adicionar uma etapa dentro do EMR a partir de um sc
 
 Primeiramente, será necessário instanciar um bucket no **Amazon S3**. Nele ficará armazenado o script a ser processado no cluster. As configurações utilizadas serão as recomendadas e já marcadas por default.
 
-![console para criar keypairs](docs/imgs/Screenshot_20240926_012234.png)
+![tela para criar bucket](docs/imgs/Screenshot_20240926_012234.png)
 
 
-![console para criar keypairs](docs/imgs/Screenshot_20240926_012259.png)
+![info bucket](docs/imgs/Screenshot_20240926_012259.png)
 
 Após isso, você irá selecionar o arquivo da sua máquina que deseja armazenar no S3 e fazer o upload para o bucket instanciado. No caso da atividade, estou utilizando um arquivo chamado **SparkNaAws.py** .
 
-![console para criar keypairs](docs/imgs/Screenshot_20240926_012334.png)
+![Upload arquiva](docs/imgs/Screenshot_20240926_012334.png)
 
-![console para criar keypairs](docs/imgs/Screenshot_20240926_012353.png)
+![informações do script](docs/imgs/Screenshot_20240926_012353.png)
 
 Após o upload ser concluído, você poderá ver as informações do script dentro do bucket. Em seguida, você irá copiar a URL do **S3** apertando o botão no canto superior direito.
 
 Após o upload do arquivo no **S3**, você irá retornar ao **EMR**, acessar o cluster instanciado, selecionar a opção **Etapa** e apertar o botão de adicionar no canto superior direito.
 
 
-![console para criar keypairs](docs/imgs/Screenshot_20240926_015346.png)
+![criação de etapa dentro do EMR](docs/imgs/Screenshot_20240926_015346.png)
 
 Após isso, selecione a opção **Aplicativo do Spark** e o modo de implantação **Modo Cliente** para rodar o script no nó primário como cliente externo. Em seguida, aperte **Adicionar Etapa**.
 
 Após a etapa ser processada pelo cluster, ela irá retornar os logs de **Controller de stderr** que irão conter dados referentes ao processamento e possíveis erros. O **stdout** conterá a saída do script desejado.
 
 
-![console para criar keypairs](docs/imgs/Screenshot_20240926_015913.png)
+![Logs da etapa concluida](docs/imgs/Screenshot_20240926_015913.png)
 
 Com isso, você terá conseguido rodar um script de aplicação Spark dentro da AWS.
+
+### Quarta etapa
+A quarta etapa consiste em fazer uma conexão pela terminal Mac/linux via protocolo SSH, primeiramente você irá acessar o resumo as informações do cluster instanciado e ira selecioar a opção **Conectar-se ao nó primário usando SSH** 
+
+![ConexãoSSH](docs/imgs/Screenshot_20240927_090136.png)
+
+![Comando do terminal](docs/imgs/Screenshot_20240927_090232.png)
+
+após isso irá copiar o comando indicado e roda-lo no mesmo diretorio em que se encontra o seu arquivo de chave `.pem`
+
+Se der algum erro de permissão use o comando chmod 400 `arquivo.pem` e rode o comando novamente. Com isso você terá acesso ao terminal do Cluster e poderá rodar scripts e aplicações por lá. 
+
+Uma dica, instale o git utilizando o comando `yum install git` e baixe repositorios para rodar diretamente no cluster.
